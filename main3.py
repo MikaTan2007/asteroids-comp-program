@@ -209,47 +209,18 @@ while run:
     for asteroid in asteroid_data:
         asteroid_rect_list.append(asteroid[7])
 
-    asteroid_rect_index = 0
-    for asteroids in asteroid_rect_list:
-        asteroid_rect_list.remove(asteroids)
-        for asteroid2 in asteroid_rect_list:
-           if pygame.Rect.colliderect(asteroids, asteroid2):
-               asteroids_removed = 0
-               while asteroids_removed < 2:
-                   for asteroid_to_be_removed in asteroid_data:
-                       if asteroid_to_be_removed[7] == asteroids or asteroid_to_be_removed[7] == asteroid2:
-                           asteroid_data.remove(asteroid_to_be_removed)
-                           asteroids_removed += 1
+    for asteroid_rect in asteroid_rect_list:
+        for asteroid_rect_2 in asteroid_rect_list:
+            if asteroid_rect_2 != asteroid_rect:
+                if pygame.Rect.colliderect(asteroid_rect, asteroid_rect_2):
+                    for asteroids in asteroid_data:
+                        if asteroids[7] == asteroid_rect:
+                            asteroid_data.remove(asteroids)
+                
 
-        else:
-            asteroid_rect_list.insert(asteroid_rect_index, asteroids)
-        
-        asteroid_rect_index += 1
+                    asteroid_rect_list.remove(asteroid_rect)
 
 
-
-    """for rect in asteroid_rects:
-        asteroid_rects.remove(rect)
-        if (pygame.Rect.collidelist(rect, asteroid_rects) != -1):
-            asteroid_data.remove(asteroid_data[rect_index])
-            #print(asteroid_rects[pygame.Rect.collidelist(rect, asteroid_rects)])
-            #print(asteroid_data[rect_index])
-        #print(rect, "----", asteroid_data[rect_index])
-        rect_index += 1"""
-    
-    """for rect in asteroid_rects:
-        asteroid_rects.remove(rect)
-        for rect2 in asteroid_rects:
-            if pygame.Rect.colliderect(rect, rect2) == True:
-                asteroid_data.remove(asteroid_data[rect_index])
-                for other_rect in asteroid_rects:
-                    if other_rect == rect2:
-                        asteroid_data.remove(asteroid_data[rect_index])
-                        asteroid_data.remove(asteroid_data[num])
-                        asteroid_rects.remove(rect2)
-                    num += 1
-        rect_index += 1"""
-        
 
     pygame.draw.rect(win, (255,0,0), (x_pos,y_pos, 100, 100), 1)
     
