@@ -214,8 +214,12 @@ while run:
         asteroid_rect_list.remove(asteroids)
         for asteroid2 in asteroid_rect_list:
            if pygame.Rect.colliderect(asteroids, asteroid2):
-               
-
+               asteroids_removed = 0
+               while asteroids_removed < 2:
+                   for asteroid_to_be_removed in asteroid_data:
+                       if asteroid_to_be_removed[7] == asteroids or asteroid_to_be_removed[7] == asteroid2:
+                           asteroid_data.remove(asteroid_to_be_removed)
+                           asteroids_removed += 1
 
         else:
             asteroid_rect_list.insert(asteroid_rect_index, asteroids)
