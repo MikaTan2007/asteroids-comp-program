@@ -63,9 +63,18 @@ def spawn_asteroid():
 
     speed = (random.randint(-30,30)/100, random.randint(50,150)/100)
 
-    size = 300#random.randint(50,250)
+    size = random.randint(50,250)
 
     speed_of_rotation = random.randint(5,100)/100
+
+    ###########
+    #         #
+    #         #
+    #         #  
+    ###########
+
+    bottom_top_left = (asteroidYPos, asteroidYPos + size)
+    top_left_right = (asteroidXPos, asteroidXPos + size)
 
     asteroid_data.append([asteroid_sprite, asteroidXPos, asteroidYPos, speed, speed_of_rotation, 0, size])
     
@@ -92,10 +101,6 @@ run = True
 
 asteroid_data = [
     
-]
-
-asteroid_rects = [ 
-
 ]
 
 while run:
@@ -137,8 +142,6 @@ while run:
 
         spawn_asteroid()
         asteroid_timer = 0
-
-    
 
 
     starship_rect = starship_base.get_rect()
@@ -194,65 +197,38 @@ while run:
         
         asteroids[5] += speed_of_angle
 
+        asteroid_rects.append([(asteroidXPos, asteroidYPos), size])
+
         win.blit(asteroid_copy,(asteroidXPos - int(asteroid_copy.get_width()/2), asteroidYPos - int(asteroid_copy.get_width()/2)))
 
         asteroids[1] += x_speed
         asteroids[2] += y_speed
+
+    for asteroid in asteroid_rects:
         
-        rectangle = (asteroidXPos - int(asteroid_sprite_rect.width/4), asteroidYPos - int(asteroid_sprite_rect.height/4), asteroid_sprite_rect.width/2, asteroid_sprite_rect.height/2)
-        #pygame.draw.rect(win, (255,0,0), (asteroidXPos - int(asteroid_sprite_rect.width/4), asteroidYPos - int(asteroid_sprite_rect.height/4), asteroid_sprite_rect.width/2, asteroid_sprite_rect.height/2) ,1)
-        
-        
-        if len(asteroids) != 8:
-            asteroids.append(pygame.Rect(rectangle))
-        
-        pygame.draw.rect(win, (255,0,0), rectangle ,1)
-    
-    asteroid_rect_list = [
+        asteroidXPos = asteroid[0][0]
+        asteroidYPos = asteroid[0][1]
+        asteroidSize = asteroid[1]
 
-    ]
+        asteroidXPos -= asteroidSize/4
+        asteroidYPos -= asteroidSize/4
+        asteroidSize = asteroidSize/2
 
-    for asteroid in asteroid_data:
-        asteroid_rect_list.append(asteroid[7])
+        pygame.draw.rect(win, (0,0,255), (asteroidXPos, asteroidYPos, asteroidSize, asteroidSize) ,1)
+        #pygame.draw.rect(win, (255,0,0), (asteroidXPos - asteroidSize/4, asteroidYPos - asteroidSize/4, asteroidSize/2, asteroidSize/2) ,1)
 
-    for asteroid_rect in asteroid_rect_list:
-        for asteroids in asteroid_data:
-            if asteroid[7] == asteroid_rect:
-
-                asteroidXPos = asteroids[1]
-                asteroidYPos = asteroids[2]
-
-                asteroid_rect.move_ip(1,2)
-
-                #asteroid_rect.centerx = asteroidXPos #- int(asteroid_rect.width/2)
-                #asteroid_rect.centery = asteroidYPos #- int(asteroid_rect.width/2 + 1)
-
-                pygame.draw.rect(win, (0, 0, 255), asteroid_rect)
-
-    
-
-    for asteroid_rect in asteroid_rect_list:
-        for asteroid_rect_2 in asteroid_rect_list:
-            if asteroid_rect_2 != asteroid_rect:
-                if pygame.Rect.colliderect(asteroid_rect, asteroid_rect_2):
-                    for asteroids in asteroid_data:
-                        if asteroids[7] == asteroid_rect:
-                            asteroid_data.remove(asteroids)
-                    
-                    for asteroids in asteroid_data:
-                        if asteroids[7] == asteroid_rect_2:
-                            asteroid_data.remove(asteroids)
-                
-
-                    asteroid_rect_list.remove(asteroid_rect)
-    
-    for asteroid_rect in asteroid_rect_list:
-        if pygame.Rect.colliderect(asteroid_rect, starship_rect):
-            print(True)
+        if asteroidYPos + asteroidSize > y_pos:
+            asteroid_width = (asteroidXPos, asteroidXPos+asteroidSize)
+            starship_width = (x_pos, x_pos + 100)
+            count_up = x_pos
+            while count_up < starship_width[1]:
+                if count_up >= asteroid_width[0] and count_up <= asteroid_width[1]:
+                    print("boom")
+                count_up += 1
+            
 
 
-
-    pygame.draw.rect(win, (255,0,0), starship_rect ,1)
+    pygame.draw.rect(win, (255,0,0), (x_pos, y_pos, 100, 100) ,1)
     
     pygame.display.update() 
     
