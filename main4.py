@@ -45,6 +45,12 @@ explosion_list = [explosion1, explosion2, explosion3, explosion4]
 for sprite in sprite_list:
     sprite.set_colorkey((0,0,0))
 
+#explosion1 = pygame.transform.scale(explosion1,(explosion1.get_height() * 2, explosion1.get_height() * 2))
+explosion1 = pygame.transform.scale(explosion1,(explosion1.get_height() * 2, explosion1.get_height() * 2))
+explosion2 = pygame.transform.scale(explosion2,(explosion2.get_height() * 2, explosion2.get_height() * 2))
+explosion3 = pygame.transform.scale(explosion3,(explosion3.get_height() * 2, explosion3.get_height() * 2))
+explosion4 = pygame.transform.scale(explosion4,(explosion4.get_height() * 2, explosion4.get_height() * 2))
+
 asteroid_1 = pygame.transform.scale(asteroid_1,(200,200))
 asteroid_2 = pygame.transform.scale(asteroid_2,(200,200))
 asteroid_3 = pygame.transform.scale(asteroid_3,(200,200))
@@ -88,41 +94,12 @@ def spawn_asteroid():
 
     asteroid_data.append([asteroid_sprite, asteroidXPos, asteroidYPos, speed, speed_of_rotation, 0, size])
 
-def explosion(asteroid_size, x,y):
 
-    explosions = ["explosion1", "explosion2", "explosion3", "explosion4"]
-
-    explosion_size_dict = {
-        "explosion1": 30,
-        "explosion2": 50,
-        "explosion3": 75,
-        "explosion4": 95
-    }
-
-    index_num = 0
-
-    for explosion_image in explosion_list:
-        expansion_multiplier = asteroid_size/explosion_size_dict[explosions[index_num]]
-        explosion_image = pygame.transform.scale(explosion_image,(expansion_multiplier * explosion_size_dict[index_num] , expansion_multiplier * explosion_size_dict[index_num]))
-        index_num += 1
-
-    index_for_timer = 0
-
-    if explosion_timer > 100:
-        win.blit(explosion_list[index_for_timer], (x,y))
-        index_for_timer += 1
-        explosion_timer = 0
     
             
     
 
     
-
-    
-
-
-    
-
 
 clock = pygame.time.Clock()
 time_counter = 0
@@ -265,16 +242,18 @@ while run:
         pygame.draw.rect(win, (0,0,255), (asteroidXPos, asteroidYPos, asteroidSize, asteroidSize) ,1)
         #pygame.draw.rect(win, (255,0,0), (asteroidXPos - asteroidSize/4, asteroidYPos - asteroidSize/4, asteroidSize/2, asteroidSize/2) ,1)
 
-        if asteroidYPos + asteroidSize > y_pos and asteroidYPos + asteroidSize < y_pos + 175:
+        if asteroidYPos + asteroidSize > y_pos and asteroidYPos + asteroidSize < y_pos + 180:
             asteroid_width = (asteroidXPos, asteroidXPos+asteroidSize)
             starship_width = (x_pos, x_pos + 100)
             count_up = x_pos
             while count_up < starship_width[1]:
                 if count_up >= asteroid_width[0] and count_up <= asteroid_width[1]:
                     pygame.mixer.music.play(0)
-                    #explosion(200, x_pos, y_pos)
+                    
                     if explosion_timer > 500:
-        
+                        
+                        
+
                         explosion_index = (explosion_index + 1) % 4
 
                         win.blit(explosion_list[explosion_index], (x_pos,y_pos))
