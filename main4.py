@@ -16,6 +16,7 @@ vel = 3
 black = (0, 0, 0)
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, 'img')
+pygame.mixer.music.load("explosion.mp3")
 
 #Background
 space_background = pygame.image.load('background.png').convert() 
@@ -31,8 +32,15 @@ asteroid_1 = pygame.image.load('asteroid1.png').convert()
 asteroid_2 = pygame.image.load('asteroid2.png').convert()
 asteroid_3 = pygame.image.load('asteroid3.png').convert()
 
-sprite_list = [starship_base, starship_1, starship_2, starship_3, asteroid_1, asteroid_2, asteroid_3]
+#Explosion Frames
+explosion1 = pygame.image.load('explosion1.png').convert()
+explosion2 = pygame.image.load('explosion2.png').convert()
+explosion3 = pygame.image.load('explosion3.png').convert()
+explosion4 = pygame.image.load('explosion4.png').convert()
+
+sprite_list = [starship_base, starship_1, starship_2, starship_3, asteroid_1, asteroid_2, asteroid_3, explosion1, explosion2, explosion3, explosion4]
 starship_list = [starship_base, starship_1, starship_2, starship_3]
+explosion_list = [explosion1, explosion2, explosion3, explosion4]
 
 for sprite in sprite_list:
     sprite.set_colorkey((0,0,0))
@@ -49,6 +57,8 @@ starship_3 = pygame.transform.scale(starship_3,(100,100))
 #Sprite Changing for StarShip
 starship_sprites = [starship_1, starship_2, starship_3]
 current_img_index = 0
+
+explosion_index = 0
 
 def spawn_asteroid():
     asteroid_list = [asteroid_1, asteroid_2, asteroid_3]
@@ -77,7 +87,42 @@ def spawn_asteroid():
     top_left_right = (asteroidXPos, asteroidXPos + size)
 
     asteroid_data.append([asteroid_sprite, asteroidXPos, asteroidYPos, speed, speed_of_rotation, 0, size])
+
+def explosion(asteroid_size, x,y):
+
+    explosions = ["explosion1", "explosion2", "explosion3", "explosion4"]
+
+    explosion_size_dict = {
+        "explosion1": 30,
+        "explosion2": 50,
+        "explosion3": 75,
+        "explosion4": 95
+    }
+
+    index_num = 0
+
+    for explosion_image in explosion_list:
+        expansion_multiplier = asteroid_size/explosion_size_dict[explosions[index_num]]
+        explosion_image = pygame.transform.scale(explosion_image,(expansion_multiplier * explosion_size_dict[index_num] , expansion_multiplier * explosion_size_dict[index_num]))
+        index_num += 1
+
+    index_for_timer = 0
+
+    if explosion_timer > 100:
+        win.blit(explosion_list[index_for_timer], (x,y))
+        index_for_timer += 1
+        explosion_timer = 0
     
+            
+    
+
+    
+
+    
+
+
+    
+
 
 clock = pygame.time.Clock()
 time_counter = 0
@@ -86,6 +131,8 @@ start_time = time.time()
 
 timer = 0
 asteroid_timer = 0
+explosion_timer = 0
+
 
 vel = 5
 
@@ -112,6 +159,7 @@ while run:
     time_counter = clock.tick(60)
     timer += time_counter
     asteroid_timer += time_counter
+    explosion_timer += time_counter
 
     win.fill((0,255,0))
 
@@ -217,13 +265,22 @@ while run:
         pygame.draw.rect(win, (0,0,255), (asteroidXPos, asteroidYPos, asteroidSize, asteroidSize) ,1)
         #pygame.draw.rect(win, (255,0,0), (asteroidXPos - asteroidSize/4, asteroidYPos - asteroidSize/4, asteroidSize/2, asteroidSize/2) ,1)
 
-        if asteroidYPos + asteroidSize > y_pos:
+        if asteroidYPos + asteroidSize > y_pos and asteroidYPos + asteroidSize < y_pos + 175:
             asteroid_width = (asteroidXPos, asteroidXPos+asteroidSize)
             starship_width = (x_pos, x_pos + 100)
             count_up = x_pos
             while count_up < starship_width[1]:
                 if count_up >= asteroid_width[0] and count_up <= asteroid_width[1]:
-                    print("boom")
+                    pygame.mixer.music.play(0)
+                    #explosion(200, x_pos, y_pos)
+                    if explosion_timer > 500:
+        
+                        explosion_index = (explosion_index + 1) % 4
+
+                        win.blit(explosion_list[explosion_index], (x_pos,y_pos))
+                        
+                        timer = 0
+                    
                 count_up += 1
             
 
