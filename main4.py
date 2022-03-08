@@ -45,12 +45,6 @@ explosion_list = [explosion1, explosion2, explosion3, explosion4]
 for sprite in sprite_list:
     sprite.set_colorkey((0,0,0))
 
-#explosion1 = pygame.transform.scale(explosion1,(explosion1.get_height() * 2, explosion1.get_height() * 2))
-explosion1 = pygame.transform.scale(explosion1,(explosion1.get_height() * 2, explosion1.get_height() * 2))
-explosion2 = pygame.transform.scale(explosion2,(explosion2.get_height() * 2, explosion2.get_height() * 2))
-explosion3 = pygame.transform.scale(explosion3,(explosion3.get_height() * 2, explosion3.get_height() * 2))
-explosion4 = pygame.transform.scale(explosion4,(explosion4.get_height() * 2, explosion4.get_height() * 2))
-
 asteroid_1 = pygame.transform.scale(asteroid_1,(200,200))
 asteroid_2 = pygame.transform.scale(asteroid_2,(200,200))
 asteroid_3 = pygame.transform.scale(asteroid_3,(200,200))
@@ -75,7 +69,7 @@ def spawn_asteroid():
     #y = -60 - int(asteroid_sprite.get_width() / 2)
 
     asteroidXPos = random.randint(0,800)
-    asteroidYPos = 50
+    asteroidYPos = -10
 
     speed = (random.randint(-30,30)/100, random.randint(50,150)/100)
 
@@ -127,7 +121,13 @@ asteroid_data = [
     
 ]
 
+#Healthbar Related
+starship_health = 1000000 #1,000,000
+bar_length = 400
+
 while run:
+
+    
 
     asteroid_rects = [
 
@@ -141,6 +141,8 @@ while run:
     win.fill((0,255,0))
 
     win.blit(space_background,(400-int(space_background.get_width() / 2),400-int(space_background.get_height()/2)))
+
+    
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -252,7 +254,9 @@ while run:
                     
                     if explosion_timer > 500:
                         
-                        
+                        starship_health -= asteroidSize
+
+                        print(starship_health, asteroidSize)
 
                         explosion_index = (explosion_index + 1) % 4
 
@@ -261,8 +265,10 @@ while run:
                         timer = 0
                     
                 count_up += 1
-            
-
+    
+    bar_width = starship_health/1000000
+    bar_width = 400*bar_width
+    pygame.draw.rect(win, (0,255,0), (25, 25, bar_width, 50))
 
     pygame.draw.rect(win, (255,0,0), (x_pos, y_pos, 100, 100) ,1)
     
