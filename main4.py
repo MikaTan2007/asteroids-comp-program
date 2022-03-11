@@ -38,7 +38,9 @@ explosion2 = pygame.image.load('explosion2.png').convert()
 explosion3 = pygame.image.load('explosion3.png').convert()
 explosion4 = pygame.image.load('explosion4.png').convert()
 
-sprite_list = [starship_base, starship_1, starship_2, starship_3, asteroid_1, asteroid_2, asteroid_3, explosion1, explosion2, explosion3, explosion4]
+game_over = pygame.image.load('game_over3.png').convert()
+
+sprite_list = [starship_base, starship_1, starship_2, starship_3, asteroid_1, asteroid_2, asteroid_3, explosion1, explosion2, explosion3, explosion4, game_over]
 starship_list = [starship_base, starship_1, starship_2, starship_3]
 explosion_list = [explosion1, explosion2, explosion3, explosion4]
 
@@ -53,6 +55,7 @@ starship_base = pygame.transform.scale(starship_base,(100,100))
 starship_1 = pygame.transform.scale(starship_1,(100,100))
 starship_2 = pygame.transform.scale(starship_2,(100,100))
 starship_3 = pygame.transform.scale(starship_3,(100,100))
+game_over = pygame.transform.scale(game_over,(800,800))
 
 #Sprite Changing for StarShip
 starship_sprites = [starship_1, starship_2, starship_3]
@@ -88,9 +91,14 @@ def spawn_asteroid():
 
     asteroid_data.append([asteroid_sprite, asteroidXPos, asteroidYPos, speed, speed_of_rotation, 0, size])
 
+def spawn_blaster():
+    blaster_data.append(x_pos, y_pos + 100)
 
-    
-            
+
+
+blaster_data = [
+
+]
     
 
     
@@ -124,6 +132,8 @@ asteroid_data = [
 #Healthbar Related
 starship_health = 1000000 #1,000,000
 bar_length = 400
+bar_red = 0
+bar_green = 255
 
 while run:
 
@@ -202,6 +212,16 @@ while run:
 
         
         win.blit(img_copy, (x_pos, y_pos))
+    
+    """elif keys[pygame.K_SPACE] == True:
+        win.blit(space_background,(400-int(space_background.get_width() / 2),400-int(space_background.get_height()/2)))
+
+        img_copy = pygame.transform.rotate(starship_sprites[current_img_index], angle2)
+
+        x_pos += vel
+
+        
+        win.blit(img_copy, (x_pos, y_pos))"""
         
 
     for asteroids in asteroid_data:
@@ -231,6 +251,10 @@ while run:
         asteroids[1] += x_speed
         asteroids[2] += y_speed
 
+        if asteroids[1] - 1/2*size  < 0 or asteroids[1] - 1/2*size > 800 or asteroids[2]- 1/2*size > 800:
+            asteroid_data.remove(asteroids)
+            print(len(asteroid_data))
+
     for asteroid in asteroid_rects:
         
         asteroidXPos = asteroid[0][0]
@@ -254,9 +278,17 @@ while run:
                     
                     if explosion_timer > 500:
                         
-                        starship_health -= asteroidSize
+                        starship_health -= asteroidSize * 2
 
                         print(starship_health, asteroidSize)
+
+                        bar_red += 0.000255 * asteroidSize * 2
+                        bar_green -= 0.000255 * asteroidSize * 2
+
+                        if bar_red > 255 and bar_green < 0:
+                            bar_red = 255
+                            bar_green = 0
+
 
                         explosion_index = (explosion_index + 1) % 4
 
@@ -265,12 +297,25 @@ while run:
                         timer = 0
                     
                 count_up += 1
-    
-    bar_width = starship_health/1000000
-    bar_width = 400*bar_width
-    pygame.draw.rect(win, (0,255,0), (25, 25, bar_width, 50))
+        
 
     pygame.draw.rect(win, (255,0,0), (x_pos, y_pos, 100, 100) ,1)
+
+    bar_width = starship_health/1000000
+    bar_width = 400*bar_width
+
+    pygame.draw.rect(win, (bar_red,bar_green,0), (25, 25, bar_width, 50))
+
+    pygame.draw.rect(win, (bar_red,bar_green,0), (25, 25, 400, 50) , 1)
+    
+    
+    if bar_width < 0:
+        bar_width = 0
+        win.blit(game_over,(400-int(game_over.get_width() / 2),400-int(game_over.get_height()/2)))
+    
+    
+
+    
     
     pygame.display.update() 
     
