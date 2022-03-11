@@ -63,7 +63,10 @@ current_img_index = 0
 
 explosion_index = 0
 
+asteroid_id_num = 0
+
 def spawn_asteroid():
+    global asteroid_id_num
     asteroid_list = [asteroid_1, asteroid_2, asteroid_3]
     asteroid_num = random.randint(0,2)
     asteroid_sprite = asteroid_list[asteroid_num]
@@ -85,14 +88,15 @@ def spawn_asteroid():
     #         #
     #         #  
     ###########
-
+    id_num = asteroid_id_num
+    asteroid_id_num += 1
     bottom_top_left = (asteroidYPos, asteroidYPos + size)
     top_left_right = (asteroidXPos, asteroidXPos + size)
 
-    asteroid_data.append([asteroid_sprite, asteroidXPos, asteroidYPos, speed, speed_of_rotation, 0, size])
+    asteroid_data.append([asteroid_sprite, asteroidXPos, asteroidYPos, speed, speed_of_rotation, 0, size, id_num])
 
 def spawn_blaster():
-    blaster_data.append(x_pos, y_pos + 100)
+    blaster_data.append([x_pos + 50, y_pos])
 
 
 
@@ -160,7 +164,7 @@ while run:
 
     keys = pygame.key.get_pressed()
 
-    mx, my = pygame.mouse.get_pos()
+    #mx, my = pygame.mouse.get_pos()
 
     #Sprite Changing
     if timer > 200:
@@ -192,6 +196,9 @@ while run:
 
     keys = pygame.key.get_pressed()
 
+    if keys[pygame.K_SPACE] == True:
+        spawn_blaster()
+
     if keys[pygame.K_LEFT] == True and x_pos > 0:
         win.blit(space_background,(400-int(space_background.get_width() / 2),400-int(space_background.get_height()/2)))
 
@@ -213,16 +220,14 @@ while run:
         
         win.blit(img_copy, (x_pos, y_pos))
     
-    """elif keys[pygame.K_SPACE] == True:
-        win.blit(space_background,(400-int(space_background.get_width() / 2),400-int(space_background.get_height()/2)))
-
-        img_copy = pygame.transform.rotate(starship_sprites[current_img_index], angle2)
-
-        x_pos += vel
-
-        
-        win.blit(img_copy, (x_pos, y_pos))"""
-        
+    #elif keys[pygame.K_SPACE] == True:
+        #spawn_blaster()
+    
+    for blaster in blaster_data:
+        blasterX = blaster[0]
+        blasterY = blaster[1]
+        pygame.draw.circle(win, (0,255,0), (blasterX, blasterY), 5)
+        blaster[1] -= 5
 
     for asteroids in asteroid_data:
 
@@ -234,6 +239,8 @@ while run:
 
         size = asteroids[6]
 
+        id_num = asteroids[7]
+
         speed_of_angle = asteroids[4]
 
         current_rotation = asteroids[5]
@@ -244,16 +251,22 @@ while run:
         
         asteroids[5] += speed_of_angle
 
-        asteroid_rects.append([(asteroidXPos, asteroidYPos), size])
+        if asteroids[1] - 1/2*size  < 0 or asteroids[1] - 1/2*size > 800 or asteroids[2]- 1/2*size > 800:
+            asteroid_data.remove(asteroids)
+            print(len(asteroid_data))
+
+        
+
+        asteroid_rects.append([(asteroidXPos, asteroidYPos), size, id_num])
 
         win.blit(asteroid_copy,(asteroidXPos - int(asteroid_copy.get_width()/2), asteroidYPos - int(asteroid_copy.get_width()/2)))
 
         asteroids[1] += x_speed
         asteroids[2] += y_speed
 
-        if asteroids[1] - 1/2*size  < 0 or asteroids[1] - 1/2*size > 800 or asteroids[2]- 1/2*size > 800:
-            asteroid_data.remove(asteroids)
-            print(len(asteroid_data))
+        
+
+        
 
     for asteroid in asteroid_rects:
         
@@ -265,6 +278,9 @@ while run:
         asteroidYPos -= asteroidSize/4
         asteroidSize = asteroidSize/2
 
+        id_num = asteroid[2]
+
+        pygame.draw.rect(win, (0,0,255), (asteroidXPos, asteroidYPos, 10, 10) ,1)
         pygame.draw.rect(win, (0,0,255), (asteroidXPos, asteroidYPos, asteroidSize, asteroidSize) ,1)
         #pygame.draw.rect(win, (255,0,0), (asteroidXPos - asteroidSize/4, asteroidYPos - asteroidSize/4, asteroidSize/2, asteroidSize/2) ,1)
 
@@ -297,6 +313,19 @@ while run:
                         timer = 0
                     
                 count_up += 1
+
+        for blaster in blaster_data:
+            #asteroidYPos + asteroidSize > blaster[0] and asteroidYPos + asteroidSize < blaster[1]
+            blasterX = blaster[0]
+            blasterY = blaster[1]
+            if blasterX > asteroidXPos and blasterX < asteroidXPos + asteroidSize and blasterY > asteroidYPos and blasterY < asteroidYPos + asteroidSize:
+                blaster_data.remove(blaster)
+                for asteroids in asteroid_data:
+                    if id_num == asteroids[7]:
+                        asteroid_data.remove(asteroids)
+             
+        
+                
         
 
     pygame.draw.rect(win, (255,0,0), (x_pos, y_pos, 100, 100) ,1)
