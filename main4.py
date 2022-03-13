@@ -352,7 +352,7 @@ while run:
             #asteroidYPos + asteroidSize > blaster[0] and asteroidYPos + asteroidSize < blaster[1]
             blasterX = blaster[0]
             blasterY = blaster[1]
-            if blasterX + 10 > asteroidXPos and blasterX - 10 < asteroidXPos + asteroidSize and blasterY > asteroidYPos and blasterY < asteroidYPos + asteroidSize:
+            if blasterX + 10 > asteroidXPos and blasterX -  10 < asteroidXPos + asteroidSize and blasterY > asteroidYPos and blasterY < asteroidYPos + asteroidSize:
                 blaster_data.remove(blaster)
                 for asteroids in asteroid_data:
                     if id_num == asteroids[7]:
