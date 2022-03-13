@@ -95,14 +95,16 @@ def spawn_asteroid():
 
     asteroid_data.append([asteroid_sprite, asteroidXPos, asteroidYPos, speed, speed_of_rotation, 0, size, id_num])
 
-def spawn_blaster():
-    blaster_data.append([x_pos + 50, y_pos])
+def spawn_blaster(blaster_size, color):
+    blaster_data.append([x_pos + 50, y_pos, blaster_size, color])
 
 
 
 blaster_data = [
 
 ]
+
+
     
 
     
@@ -138,6 +140,17 @@ starship_health = 1000000 #1,000,000
 bar_length = 400
 bar_red = 0
 bar_green = 255
+
+blaster_counter = 0
+blaster_type_index = 0
+blaster_types = ["normal", "medium", "high"]
+blaster_type_index_counter = 0
+
+blaster_type_dict = {
+    "normal": [10, 5, (255,0,0)],
+    "medium": [25, 10, (0,255,0)],
+    "high": [50, 15, (0,0, 255)]
+}
 
 while run:
 
@@ -196,8 +209,30 @@ while run:
 
     keys = pygame.key.get_pressed()
 
+    blaster_type = blaster_type_dict[blaster_types[blaster_type_index]]
+
+    blaster_type_timer = blaster_type[0]
+
     if keys[pygame.K_SPACE] == True:
-        spawn_blaster()
+        blaster_counter += 1 
+        if blaster_counter > blaster_type_timer:
+            spawn_blaster(blaster_type[1], blaster_type[2])
+            blaster_counter = 0
+    else:
+        blaster_counter += 1
+    
+    
+    
+    if keys[pygame.K_q] == True:
+        blaster_type_index_counter += 1
+        if blaster_type_index_counter > 10:
+            blaster_type_index += 1
+            if blaster_type_index > 2:
+                blaster_type_index = 0
+            blaster_type_index_counter = 0
+    else:
+        blaster_type_index_counter += 1
+    
 
     if keys[pygame.K_LEFT] == True and x_pos > 0:
         win.blit(space_background,(400-int(space_background.get_width() / 2),400-int(space_background.get_height()/2)))
@@ -226,8 +261,10 @@ while run:
     for blaster in blaster_data:
         blasterX = blaster[0]
         blasterY = blaster[1]
-        pygame.draw.circle(win, (0,255,0), (blasterX, blasterY), 5)
-        blaster[1] -= 5
+        blasterSize = blaster[2]
+        blasterColor = blaster[3]
+        pygame.draw.circle(win, blasterColor, (blasterX, blasterY), blasterSize)
+        blaster[1] -= 10
 
     for asteroids in asteroid_data:
 
@@ -253,7 +290,6 @@ while run:
 
         if asteroids[1] - 1/2*size  < 0 or asteroids[1] - 1/2*size > 800 or asteroids[2]- 1/2*size > 800:
             asteroid_data.remove(asteroids)
-            print(len(asteroid_data))
 
         
 
@@ -296,8 +332,6 @@ while run:
                         
                         starship_health -= asteroidSize * 2
 
-                        print(starship_health, asteroidSize)
-
                         bar_red += 0.000255 * asteroidSize * 2
                         bar_green -= 0.000255 * asteroidSize * 2
 
@@ -318,7 +352,7 @@ while run:
             #asteroidYPos + asteroidSize > blaster[0] and asteroidYPos + asteroidSize < blaster[1]
             blasterX = blaster[0]
             blasterY = blaster[1]
-            if blasterX > asteroidXPos and blasterX < asteroidXPos + asteroidSize and blasterY > asteroidYPos and blasterY < asteroidYPos + asteroidSize:
+            if blasterX + 10 > asteroidXPos and blasterX - 10 < asteroidXPos + asteroidSize and blasterY > asteroidYPos and blasterY < asteroidYPos + asteroidSize:
                 blaster_data.remove(blaster)
                 for asteroids in asteroid_data:
                     if id_num == asteroids[7]:
