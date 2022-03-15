@@ -6,7 +6,7 @@ import random
 pygame.init()
 
 win = pygame.display.set_mode((800,800))
-pygame.display.set_caption("First Game")
+pygame.display.set_caption("Space Shooter")
 
 x = 50
 y = 50
@@ -16,7 +16,10 @@ vel = 3
 black = (0, 0, 0)
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, 'img')
-pygame.mixer.music.load("explosion.mp3")
+"""pygame.mixer.music.load("explosion.mp3")
+pygame.mixer.music.load("lazer1.wav")
+pygame.mixer.music.load("lazer2.wav")
+pygame.mixer.music.load("lazer3.wav")"""
 
 #Background
 space_background = pygame.image.load('background.png').convert() 
@@ -90,15 +93,18 @@ def spawn_asteroid():
     ###########
     id_num = asteroid_id_num
     asteroid_id_num += 1
-    bottom_top_left = (asteroidYPos, asteroidYPos + size)
-    top_left_right = (asteroidXPos, asteroidXPos + size)
+    #bottom_top_left = (asteroidYPos, asteroidYPos + size)
+    #top_left_right = (asteroidXPos, asteroidXPos + size)
 
-    asteroid_data.append([asteroid_sprite, asteroidXPos, asteroidYPos, speed, speed_of_rotation, 0, size, id_num])
+    health = size * 10
+
+    asteroid_data.append([asteroid_sprite, asteroidXPos, asteroidYPos, speed, speed_of_rotation, 0, size, id_num, health])
 
 def spawn_blaster(blaster_size, color):
-    blaster_data.append([x_pos + 50, y_pos, blaster_size, color])
+    damage = blaster_size * 30
+    blaster_data.append([x_pos + 50, y_pos, blaster_size, color, damage])
 
-
+score = 0
 
 blaster_data = [
 
@@ -217,7 +223,19 @@ while run:
         blaster_counter += 1 
         if blaster_counter > blaster_type_timer:
             spawn_blaster(blaster_type[1], blaster_type[2])
+            if blaster_type[0] == 10:
+                pygame.mixer.music.load("lazer1.wav")
+                pygame.mixer.music.play(0)
+            elif blaster_type[0] == 25:
+                pygame.mixer.music.load("lazer2.wav")
+                pygame.mixer.music.play(0)
+            else:
+                pygame.mixer.music.load("lazer3.wav")
+                pygame.mixer.music.play(0)
+
             blaster_counter = 0
+
+            
     else:
         blaster_counter += 1
     
@@ -273,8 +291,11 @@ while run:
         asteroidYPos = asteroids[2]
         x_speed = asteroids[3][0]
         y_speed = asteroids[3][1]
+        
 
         size = asteroids[6]
+        original_health = size * 10
+        current_health = asteroids[8]
 
         id_num = asteroids[7]
 
@@ -288,7 +309,7 @@ while run:
         
         asteroids[5] += speed_of_angle
 
-        if asteroids[1] - 1/2*size  < 0 or asteroids[1] - 1/2*size > 800 or asteroids[2]- 1/2*size > 800:
+        if asteroids[1] - 1/2*size  < -150 or asteroids[1] - 1/2*size > 800 or asteroids[2]- 1/2*size > 800:
             asteroid_data.remove(asteroids)
 
         
@@ -300,6 +321,12 @@ while run:
         asteroids[1] += x_speed
         asteroids[2] += y_speed
 
+        bar_width = current_health/original_health
+        bar_width = 50*bar_width
+
+        pygame.draw.rect(win, (255,0,0), (asteroids[1] - 25, asteroids[2] - (size/2) + 25, bar_width, 10))
+
+        #pygame.draw.rect(win, (bar_red,bar_green,0), (25, 25, 400, 50) , 1)
         
 
         
@@ -316,7 +343,7 @@ while run:
 
         id_num = asteroid[2]
 
-        pygame.draw.rect(win, (0,0,255), (asteroidXPos, asteroidYPos, 10, 10) ,1)
+        #pygame.draw.rect(win, (0,0,255), (asteroidXPos, asteroidYPos, 10, 10) ,1)
         pygame.draw.rect(win, (0,0,255), (asteroidXPos, asteroidYPos, asteroidSize, asteroidSize) ,1)
         #pygame.draw.rect(win, (255,0,0), (asteroidXPos - asteroidSize/4, asteroidYPos - asteroidSize/4, asteroidSize/2, asteroidSize/2) ,1)
 
@@ -326,6 +353,7 @@ while run:
             count_up = x_pos
             while count_up < starship_width[1]:
                 if count_up >= asteroid_width[0] and count_up <= asteroid_width[1]:
+                    pygame.mixer.music.load("explosion.mp3")
                     pygame.mixer.music.play(0)
                     
                     if explosion_timer > 500:
@@ -356,7 +384,14 @@ while run:
                 blaster_data.remove(blaster)
                 for asteroids in asteroid_data:
                     if id_num == asteroids[7]:
-                        asteroid_data.remove(asteroids)
+                        asteroids[8] -= blaster[4]
+                        
+                        if asteroids[8] <= 0:
+                            asteroid_data.remove(asteroids)
+                            score += size * 3
+                            print(score)
+            elif blasterY < 0:
+                blaster_data.remove(blaster)
              
         
                 
