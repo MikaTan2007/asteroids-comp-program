@@ -153,9 +153,9 @@ blaster_types = ["normal", "medium", "high"]
 blaster_type_index_counter = 0
 
 blaster_type_dict = {
-    "normal": [10, 5, (255,0,0)],
-    "medium": [25, 10, (0,255,0)],
-    "high": [50, 15, (0,0, 255)]
+    "normal": [10, 5, (235, 247, 0)],
+    "medium": [25, 10, (35, 207, 67)],
+    "high": [50, 15, (42, 191, 189)]
 }
 
 while run:
