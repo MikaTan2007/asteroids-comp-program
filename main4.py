@@ -21,6 +21,7 @@ pygame.mixer.music.load("lazer1.wav")
 pygame.mixer.music.load("lazer2.wav")
 pygame.mixer.music.load("lazer3.wav")"""
 
+
 #Background
 space_background = pygame.image.load('background.png').convert() 
 
@@ -80,7 +81,7 @@ def spawn_asteroid():
     asteroidXPos = random.randint(0,800)
     asteroidYPos = -10
 
-    speed = (random.randint(-30,30)/100, random.randint(50,150)/100)
+    speed = (random.randint(-30,30)/100, random.randint(200,400)/100)
 
     size = random.randint(50,250)
 
@@ -101,7 +102,7 @@ def spawn_asteroid():
     asteroid_data.append([asteroid_sprite, asteroidXPos, asteroidYPos, speed, speed_of_rotation, 0, size, id_num, health])
 
 def spawn_blaster(blaster_size, color):
-    damage = blaster_size * 30
+    damage = blaster_size * 50
     blaster_data.append([x_pos + 50, y_pos, blaster_size, color, damage])
 
 score = 0
@@ -154,13 +155,24 @@ blaster_type_index_counter = 0
 
 blaster_type_dict = {
     "normal": [10, 5, (255,0,0)],
-    "medium": [25, 10, (0,255,0)],
-    "high": [50, 15, (0,0, 255)]
+    "medium": [20, 10, (0,255,0)],
+    "high": [25, 15, (0,0, 255)]
 }
+
+font = pygame.font.Font(None, 40)
+
+asteroid_timer_set = 1000
 
 while run:
 
-    
+    if score > 500:
+        asteroid_timer_set = 700
+    elif score > 750:
+        asteroid_timer_set = 500
+    elif score > 1000:
+        asteroid_timer_set = 250
+    elif score > 1500:
+        asteroid_timer_set = 100
 
     asteroid_rects = [
 
@@ -198,7 +210,7 @@ while run:
         timer = 0
     
     #Asteroid Spawning
-    if asteroid_timer > 1000:
+    if asteroid_timer > 500:
 
         spawn_asteroid()
         asteroid_timer = 0
@@ -309,7 +321,10 @@ while run:
         
         asteroids[5] += speed_of_angle
 
-        if asteroids[1] - 1/2*size  < -150 or asteroids[1] - 1/2*size > 800 or asteroids[2]- 1/2*size > 800:
+        if asteroids[1] - 1/2*size  < -150 or asteroids[1] - 1/2*size > 800:
+            asteroid_data.remove(asteroids)
+        elif asteroids[2]- 1/2*size > 800:
+            score -= 100
             asteroid_data.remove(asteroids)
 
         
@@ -389,7 +404,6 @@ while run:
                         if asteroids[8] <= 0:
                             asteroid_data.remove(asteroids)
                             score += size * 3
-                            print(score)
             elif blasterY < 0:
                 blaster_data.remove(blaster)
              
@@ -411,9 +425,9 @@ while run:
         bar_width = 0
         win.blit(game_over,(400-int(game_over.get_width() / 2),400-int(game_over.get_height()/2)))
     
-    
+    text = font.render("Score: " + str(score), False, (255,0,0))
+    win.blit(text, (600,40))
 
-    
     
     pygame.display.update() 
     
