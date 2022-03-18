@@ -154,10 +154,16 @@ blaster_types = ["normal", "medium", "high"]
 blaster_type_index_counter = 0
 
 blaster_type_dict = {
-    "normal": [10, 5, (255,0,0)],
+    "normal": [10, 5, (235, 247, 0)],
+    "medium": [20, 10, (35, 207, 67)],
+    "high": [25, 15, (42, 191, 189)]
+}
+
+"""
+"normal": [10, 5, (255,0,0)],
     "medium": [20, 10, (0,255,0)],
     "high": [25, 15, (0,0, 255)]
-}
+"""
 
 font = pygame.font.Font(None, 40)
 
