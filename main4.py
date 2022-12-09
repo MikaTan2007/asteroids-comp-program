@@ -3,6 +3,7 @@ import os
 import time
 import random
 
+
 pygame.init()
 
 win = pygame.display.set_mode((800,800))
@@ -169,272 +170,326 @@ font = pygame.font.Font(None, 40)
 
 asteroid_timer_set = 1000
 
+game_over_run = False
+
 while run:
-
-    if score > 500:
-        asteroid_timer_set = 700
-    elif score > 750:
-        asteroid_timer_set = 500
-    elif score > 1000:
-        asteroid_timer_set = 250
-    elif score > 1500:
-        asteroid_timer_set = 100
-
-    asteroid_rects = [
-
-    ]
-
-    time_counter = clock.tick(60)
-    timer += time_counter
-    asteroid_timer += time_counter
-    explosion_timer += time_counter
-
-    win.fill((0,255,0))
-
-    win.blit(space_background,(400-int(space_background.get_width() / 2),400-int(space_background.get_height()/2)))
-
-    
-    
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-
     keys = pygame.key.get_pressed()
 
-    #mx, my = pygame.mouse.get_pos()
+    if game_over_run == False:
+        
 
-    #Sprite Changing
-    if timer > 200:
+        if score > 1500:
+            asteroid_timer_set = 700
+        elif score > 1000:
+            asteroid_timer_set = 500
+        elif score > 750:
+            asteroid_timer_set = 250
+        elif score > 500:
+            asteroid_timer_set = 100
+
+        asteroid_rects = [
+
+        ]
+
+        time_counter = clock.tick(60)
+        timer += time_counter
+        asteroid_timer += time_counter
+        explosion_timer += time_counter
+
+        win.fill((0,255,0))
+
+        win.blit(space_background,(400-int(space_background.get_width() / 2),400-int(space_background.get_height()/2)))
+
         
         
-        current_img_index = (current_img_index + 1) % 3 
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
+        
 
         #mx, my = pygame.mouse.get_pos()
-        #win.blit(starship_sprites[current_img_index], (mx - int(starship_base.get_width() / 2), my - int(starship_base.get_height() / 2)))
+
+        #Sprite Changing
+        if timer > 200:
+            
+            
+            current_img_index = (current_img_index + 1) % 3 
+
+            #mx, my = pygame.mouse.get_pos()
+            #win.blit(starship_sprites[current_img_index], (mx - int(starship_base.get_width() / 2), my - int(starship_base.get_height() / 2)))
+            
+            # Reset the timer
+            timer = 0
         
-        # Reset the timer
-        timer = 0
-    
-    #Asteroid Spawning
-    if asteroid_timer > 500:
+        #Asteroid Spawning
+        if asteroid_timer > 500:
 
-        spawn_asteroid()
-        asteroid_timer = 0
+            spawn_asteroid()
+            asteroid_timer = 0
 
 
-    starship_rect = starship_base.get_rect()
+        starship_rect = starship_base.get_rect()
 
-    starship_rect.centerx = x_pos + int(starship_rect.width/2)
-    starship_rect.centery = y_pos + int(starship_rect.width/2)
+        starship_rect.centerx = x_pos + int(starship_rect.width/2)
+        starship_rect.centery = y_pos + int(starship_rect.width/2)
 
-    starship_rect = pygame.Rect(starship_rect)
+        starship_rect = pygame.Rect(starship_rect)
 
-    win.blit(starship_sprites[current_img_index], (x_pos, y_pos))
+        win.blit(starship_sprites[current_img_index], (x_pos, y_pos))
 
-    keys = pygame.key.get_pressed()
+        keys = pygame.key.get_pressed()
 
-    blaster_type = blaster_type_dict[blaster_types[blaster_type_index]]
+        blaster_type = blaster_type_dict[blaster_types[blaster_type_index]]
 
-    blaster_type_timer = blaster_type[0]
+        blaster_type_timer = blaster_type[0]
 
-    if keys[pygame.K_SPACE] == True:
-        blaster_counter += 1 
-        if blaster_counter > blaster_type_timer:
-            spawn_blaster(blaster_type[1], blaster_type[2])
-            if blaster_type[0] == 10:
-                pygame.mixer.music.load("lazer1.wav")
-                pygame.mixer.music.play(0)
-            elif blaster_type[0] == 25:
-                pygame.mixer.music.load("lazer2.wav")
-                pygame.mixer.music.play(0)
-            else:
-                pygame.mixer.music.load("lazer3.wav")
-                pygame.mixer.music.play(0)
+        if keys[pygame.K_SPACE] == True:
+            blaster_counter += 1 
+            if blaster_counter > blaster_type_timer:
+                spawn_blaster(blaster_type[1], blaster_type[2])
+                if blaster_type[0] == 10:
+                    pygame.mixer.music.load("lazer1.wav")
+                    pygame.mixer.music.play(0)
+                elif blaster_type[0] == 25:
+                    pygame.mixer.music.load("lazer2.wav")
+                    pygame.mixer.music.play(0)
+                else:
+                    pygame.mixer.music.load("lazer3.wav")
+                    pygame.mixer.music.play(0)
 
-            blaster_counter = 0
+                blaster_counter = 0
+
+                
+        else:
+            blaster_counter += 1
+        
+        
+        
+        if keys[pygame.K_q] == True:
+            blaster_type_index_counter += 1
+            if blaster_type_index_counter > 10:
+                blaster_type_index += 1
+                if blaster_type_index > 2:
+                    blaster_type_index = 0
+                blaster_type_index_counter = 0
+        else:
+            blaster_type_index_counter += 1
+        
+
+        if keys[pygame.K_LEFT] == True and x_pos > 0:
+            win.blit(space_background,(400-int(space_background.get_width() / 2),400-int(space_background.get_height()/2)))
+
+            img_copy = pygame.transform.rotate(starship_sprites[current_img_index], angle)
+
+            x_pos -= vel
 
             
-    else:
-        blaster_counter += 1
-    
-    
-    
-    if keys[pygame.K_q] == True:
-        blaster_type_index_counter += 1
-        if blaster_type_index_counter > 10:
-            blaster_type_index += 1
-            if blaster_type_index > 2:
-                blaster_type_index = 0
-            blaster_type_index_counter = 0
-    else:
-        blaster_type_index_counter += 1
-    
+            win.blit(img_copy, (x_pos, y_pos))
+            
 
-    if keys[pygame.K_LEFT] == True and x_pos > 0:
-        win.blit(space_background,(400-int(space_background.get_width() / 2),400-int(space_background.get_height()/2)))
+        elif keys[pygame.K_RIGHT] == True and x_pos < 700:
+            win.blit(space_background,(400-int(space_background.get_width() / 2),400-int(space_background.get_height()/2)))
 
-        img_copy = pygame.transform.rotate(starship_sprites[current_img_index], angle)
+            img_copy = pygame.transform.rotate(starship_sprites[current_img_index], angle2)
 
-        x_pos -= vel
+            x_pos += vel
 
+            
+            win.blit(img_copy, (x_pos, y_pos))
         
-        win.blit(img_copy, (x_pos, y_pos))
+        #elif keys[pygame.K_SPACE] == True:
+            #spawn_blaster()
         
-
-    elif keys[pygame.K_RIGHT] == True and x_pos < 700:
-        win.blit(space_background,(400-int(space_background.get_width() / 2),400-int(space_background.get_height()/2)))
-
-        img_copy = pygame.transform.rotate(starship_sprites[current_img_index], angle2)
-
-        x_pos += vel
-
-        
-        win.blit(img_copy, (x_pos, y_pos))
-    
-    #elif keys[pygame.K_SPACE] == True:
-        #spawn_blaster()
-    
-    for blaster in blaster_data:
-        blasterX = blaster[0]
-        blasterY = blaster[1]
-        blasterSize = blaster[2]
-        blasterColor = blaster[3]
-        pygame.draw.circle(win, blasterColor, (blasterX, blasterY), blasterSize)
-        blaster[1] -= 10
-
-    for asteroids in asteroid_data:
-
-        asteroid_sprite = asteroids[0]
-        asteroidXPos = asteroids[1]
-        asteroidYPos = asteroids[2]
-        x_speed = asteroids[3][0]
-        y_speed = asteroids[3][1]
-        
-
-        size = asteroids[6]
-        original_health = size * 10
-        current_health = asteroids[8]
-
-        id_num = asteroids[7]
-
-        speed_of_angle = asteroids[4]
-
-        current_rotation = asteroids[5]
-
-        asteroid_sprite = pygame.transform.scale(asteroid_sprite,(size,size))
-        asteroid_copy = pygame.transform.rotate(asteroid_sprite, current_rotation)
-        asteroid_sprite_rect = asteroid_sprite.get_rect()
-        
-        asteroids[5] += speed_of_angle
-
-        if asteroids[1] - 1/2*size  < -150 or asteroids[1] - 1/2*size > 800:
-            asteroid_data.remove(asteroids)
-        elif asteroids[2]- 1/2*size > 800:
-            score -= 100
-            asteroid_data.remove(asteroids)
-
-        
-
-        asteroid_rects.append([(asteroidXPos, asteroidYPos), size, id_num])
-
-        win.blit(asteroid_copy,(asteroidXPos - int(asteroid_copy.get_width()/2), asteroidYPos - int(asteroid_copy.get_width()/2)))
-
-        asteroids[1] += x_speed
-        asteroids[2] += y_speed
-
-        bar_width = current_health/original_health
-        bar_width = 50*bar_width
-
-        pygame.draw.rect(win, (255,0,0), (asteroids[1] - 25, asteroids[2] - (size/2) + 25, bar_width, 10))
-
-        #pygame.draw.rect(win, (bar_red,bar_green,0), (25, 25, 400, 50) , 1)
-        
-
-        
-
-    for asteroid in asteroid_rects:
-        
-        asteroidXPos = asteroid[0][0]
-        asteroidYPos = asteroid[0][1]
-        asteroidSize = asteroid[1]
-
-        asteroidXPos -= asteroidSize/4
-        asteroidYPos -= asteroidSize/4
-        asteroidSize = asteroidSize/2
-
-        id_num = asteroid[2]
-
-        #pygame.draw.rect(win, (0,0,255), (asteroidXPos, asteroidYPos, 10, 10) ,1)
-        pygame.draw.rect(win, (0,0,255), (asteroidXPos, asteroidYPos, asteroidSize, asteroidSize) ,1)
-        #pygame.draw.rect(win, (255,0,0), (asteroidXPos - asteroidSize/4, asteroidYPos - asteroidSize/4, asteroidSize/2, asteroidSize/2) ,1)
-
-        if asteroidYPos + asteroidSize > y_pos and asteroidYPos + asteroidSize < y_pos + 180:
-            asteroid_width = (asteroidXPos, asteroidXPos+asteroidSize)
-            starship_width = (x_pos, x_pos + 100)
-            count_up = x_pos
-            while count_up < starship_width[1]:
-                if count_up >= asteroid_width[0] and count_up <= asteroid_width[1]:
-                    pygame.mixer.music.load("explosion.mp3")
-                    pygame.mixer.music.play(0)
-                    
-                    if explosion_timer > 500:
-                        
-                        starship_health -= asteroidSize * 2
-
-                        bar_red += 0.000255 * asteroidSize * 2
-                        bar_green -= 0.000255 * asteroidSize * 2
-
-                        if bar_red > 255 and bar_green < 0:
-                            bar_red = 255
-                            bar_green = 0
-
-
-                        explosion_index = (explosion_index + 1) % 4
-
-                        win.blit(explosion_list[explosion_index], (x_pos,y_pos))
-                        
-                        timer = 0
-                    
-                count_up += 1
-
         for blaster in blaster_data:
-            #asteroidYPos + asteroidSize > blaster[0] and asteroidYPos + asteroidSize < blaster[1]
             blasterX = blaster[0]
             blasterY = blaster[1]
-            if blasterX + 10 > asteroidXPos and blasterX -  10 < asteroidXPos + asteroidSize and blasterY > asteroidYPos and blasterY < asteroidYPos + asteroidSize:
-                blaster_data.remove(blaster)
-                for asteroids in asteroid_data:
-                    if id_num == asteroids[7]:
-                        asteroids[8] -= blaster[4]
+            blasterSize = blaster[2]
+            blasterColor = blaster[3]
+            pygame.draw.circle(win, blasterColor, (blasterX, blasterY), blasterSize)
+            blaster[1] -= 10
+
+        for asteroids in asteroid_data:
+
+            asteroid_sprite = asteroids[0]
+            asteroidXPos = asteroids[1]
+            asteroidYPos = asteroids[2]
+            x_speed = asteroids[3][0]
+            y_speed = asteroids[3][1]
+            
+
+            size = asteroids[6]
+            original_health = size * 10
+            current_health = asteroids[8]
+
+            id_num = asteroids[7]
+
+            speed_of_angle = asteroids[4]
+
+            current_rotation = asteroids[5]
+
+            asteroid_sprite = pygame.transform.scale(asteroid_sprite,(size,size))
+            asteroid_copy = pygame.transform.rotate(asteroid_sprite, current_rotation)
+            asteroid_sprite_rect = asteroid_sprite.get_rect()
+            
+            asteroids[5] += speed_of_angle
+
+            if asteroids[1] - 1/2*size  < -150 or asteroids[1] - 1/2*size > 800:
+                asteroid_data.remove(asteroids)
+            elif asteroids[2]- 1/2*size > 800:
+                score -= 100
+                asteroid_data.remove(asteroids)
+
+            
+
+            asteroid_rects.append([(asteroidXPos, asteroidYPos), size, id_num])
+
+            win.blit(asteroid_copy,(asteroidXPos - int(asteroid_copy.get_width()/2), asteroidYPos - int(asteroid_copy.get_width()/2)))
+
+            asteroids[1] += x_speed
+            asteroids[2] += y_speed
+
+            bar_width = current_health/original_health
+            bar_width = 50*bar_width
+
+            pygame.draw.rect(win, (255,0,0), (asteroids[1] - 25, asteroids[2] - (size/2) + 25, bar_width, 10))
+
+            #pygame.draw.rect(win, (bar_red,bar_green,0), (25, 25, 400, 50) , 1)
+            
+
+            
+
+        for asteroid in asteroid_rects:
+            
+            asteroidXPos = asteroid[0][0]
+            asteroidYPos = asteroid[0][1]
+            asteroidSize = asteroid[1]
+
+            asteroidXPos -= asteroidSize/4
+            asteroidYPos -= asteroidSize/4
+            asteroidSize = asteroidSize/2
+
+            id_num = asteroid[2]
+
+            #pygame.draw.rect(win, (0,0,255), (asteroidXPos, asteroidYPos, 10, 10) ,1)
+            pygame.draw.rect(win, (0,0,255), (asteroidXPos, asteroidYPos, asteroidSize, asteroidSize) ,1)
+            #pygame.draw.rect(win, (255,0,0), (asteroidXPos - asteroidSize/4, asteroidYPos - asteroidSize/4, asteroidSize/2, asteroidSize/2) ,1)
+
+            if asteroidYPos + asteroidSize > y_pos and asteroidYPos + asteroidSize < y_pos + 180:
+                asteroid_width = (asteroidXPos, asteroidXPos+asteroidSize)
+                starship_width = (x_pos, x_pos + 100)
+                count_up = x_pos
+                while count_up < starship_width[1]:
+                    if count_up >= asteroid_width[0] and count_up <= asteroid_width[1]:
+                        pygame.mixer.music.load("explosion.mp3")
+                        pygame.mixer.music.play(0)
                         
-                        if asteroids[8] <= 0:
-                            asteroid_data.remove(asteroids)
-                            score += size * 3
-            elif blasterY < 0:
-                blaster_data.remove(blaster)
-             
-        
+                        if explosion_timer > 500:
+                            
+                            starship_health -= asteroidSize * 2
+
+                            bar_red += 0.000255 * asteroidSize * 2
+                            bar_green -= 0.000255 * asteroidSize * 2
+
+                            if bar_red > 255 and bar_green < 0:
+                                bar_red = 255
+                                bar_green = 0
+
+
+                            explosion_index = (explosion_index + 1) % 4
+
+                            win.blit(explosion_list[explosion_index], (x_pos,y_pos))
+                            
+                            timer = 0
+                        
+                    count_up += 1
+
+            for blaster in blaster_data:
+                #asteroidYPos + asteroidSize > blaster[0] and asteroidYPos + asteroidSize < blaster[1]
+                blasterX = blaster[0]
+                blasterY = blaster[1]
+                if blasterX + 10 > asteroidXPos and blasterX -  10 < asteroidXPos + asteroidSize and blasterY > asteroidYPos and blasterY < asteroidYPos + asteroidSize:
+                    blaster_data.remove(blaster)
+                    for asteroids in asteroid_data:
+                        if id_num == asteroids[7]:
+                            asteroids[8] -= blaster[4]
+                            
+                            if asteroids[8] <= 0:
+                                asteroid_data.remove(asteroids)
+                                score += size * 3
+                elif blasterY < 0:
+                    blaster_data.remove(blaster)
                 
+            
+                    
+            
+        pygame.draw.rect(win, (255,0,0), (x_pos, y_pos, 100, 100) ,1)
+
+        bar_width = starship_health/1000000
+        bar_width = 400*bar_width
+
+        if bar_width < 0:
+            bar_width = 0
+            win.blit(game_over,(400-int(game_over.get_width() / 2),400-int(game_over.get_height()/2)))
+            game_over_run = True
+
+        pygame.draw.rect(win, (bar_red,bar_green,0), (25, 25, bar_width, 50))
+
+        pygame.draw.rect(win, (bar_red,bar_green,0), (25, 25, 400, 50) , 1)
+        
+        high_score = 0
+
+        f = open('data.txt', 'r')
+        high_score = f.readline()
+        f.close()
+
+        if int(high_score) <= int(score):
+            high_score = score
+            f = open('data.txt', 'w')
+            f.write(str(score))
+            f.close()
+
+        
+        high_score_text = font.render("High Score: " + str(high_score), False, (255,0,0))
+        score_text = font.render("Score: " + str(score), False, (255,0,0))
+        win.blit(score_text, (500,70))
+        win.blit(high_score_text, (500,40))
+    
+    else:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
+        win.blit(game_over,(400-int(game_over.get_width() / 2),400-int(game_over.get_height()/2)))
+        high_score_text = font.render("High Score: " + str(high_score), False, (0,255,0))
+        score_text = font.render("Score: " + str(score), False, (0,255,0))
+        win.blit(score_text, (500,70))
+        win.blit(high_score_text, (500,40))
+
+        if keys[pygame.K_SPACE] == True:
+            starship_health = 1000000 
+            starship_health = 1000000 #1,000,000
+            bar_length = 400
+            bar_red = 0
+            bar_green = 255
+
+            asteroid_data = [
+
+            ]
+            score = 0
+            x_pos = 400 - int(starship_base.get_width() / 2)
+            y_pos = 725 - int(starship_base.get_height() / 2)
+
+            game_over_run = False
+            
+
         
 
-    pygame.draw.rect(win, (255,0,0), (x_pos, y_pos, 100, 100) ,1)
-
-    bar_width = starship_health/1000000
-    bar_width = 400*bar_width
-
-    pygame.draw.rect(win, (bar_red,bar_green,0), (25, 25, bar_width, 50))
-
-    pygame.draw.rect(win, (bar_red,bar_green,0), (25, 25, 400, 50) , 1)
-    
-    
-    if bar_width < 0:
-        bar_width = 0
-        win.blit(game_over,(400-int(game_over.get_width() / 2),400-int(game_over.get_height()/2)))
-    
-    text = font.render("Score: " + str(score), False, (255,0,0))
-    win.blit(text, (600,40))
 
     
     pygame.display.update() 
+
+
     
 pygame.quit()
