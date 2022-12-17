@@ -177,15 +177,16 @@ while run:
 
     if game_over_run == False:
         
-
-        if score > 1500:
-            asteroid_timer_set = 700
-        elif score > 1000:
+        if score > 5000:
+            asteroid_timer_set = 200
+        elif score > 3000:
+            asteroid_timer_set = 400
+        elif score > 1500:
             asteroid_timer_set = 500
-        elif score > 750:
-            asteroid_timer_set = 250
+        elif score > 1000:
+            asteroid_timer_set = 800
         elif score > 500:
-            asteroid_timer_set = 100
+            asteroid_timer_set = 1000
 
         asteroid_rects = [
 
@@ -223,7 +224,7 @@ while run:
             timer = 0
         
         #Asteroid Spawning
-        if asteroid_timer > 500:
+        if asteroid_timer > asteroid_timer_set:
 
             spawn_asteroid()
             asteroid_timer = 0
@@ -337,7 +338,7 @@ while run:
             if asteroids[1] - 1/2*size  < -150 or asteroids[1] - 1/2*size > 800:
                 asteroid_data.remove(asteroids)
             elif asteroids[2]- 1/2*size > 800:
-                score -= 100
+                score -= 10
                 asteroid_data.remove(asteroids)
 
             
@@ -467,7 +468,7 @@ while run:
         win.blit(score_text, (500,70))
         win.blit(high_score_text, (500,40))
 
-        if keys[pygame.K_SPACE] == True:
+        if keys[pygame.K_r] == True:
             starship_health = 1000000 
             starship_health = 1000000 #1,000,000
             bar_length = 400
