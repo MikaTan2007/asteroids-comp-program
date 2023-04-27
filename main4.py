@@ -179,13 +179,13 @@ while run:
         
 
         if score > 1500:
-            asteroid_timer_set = 700
-        elif score > 1000:
-            asteroid_timer_set = 500
-        elif score > 750:
-            asteroid_timer_set = 250
-        elif score > 500:
             asteroid_timer_set = 100
+        elif score > 1000:
+            asteroid_timer_set = 250
+        elif score > 750:
+            asteroid_timer_set = 500
+        elif score > 500:
+            asteroid_timer_set = 700
 
         asteroid_rects = [
 
@@ -467,7 +467,7 @@ while run:
         win.blit(score_text, (500,70))
         win.blit(high_score_text, (500,40))
 
-        if keys[pygame.K_SPACE] == True:
+        if keys[pygame.K_r] == True:
             starship_health = 1000000 
             starship_health = 1000000 #1,000,000
             bar_length = 400
