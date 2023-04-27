@@ -177,17 +177,7 @@ while run:
 
     if game_over_run == False:
         
-<<<<<<< HEAD
 
-        if score > 1500:
-            asteroid_timer_set = 100
-        elif score > 1000:
-            asteroid_timer_set = 250
-        elif score > 750:
-            asteroid_timer_set = 500
-        elif score > 500:
-            asteroid_timer_set = 700
-=======
         if score > 5000:
             asteroid_timer_set = 200
         elif score > 3000:
@@ -198,7 +188,6 @@ while run:
             asteroid_timer_set = 800
         elif score > 500:
             asteroid_timer_set = 1000
->>>>>>> e546f0233ce41352893812c6513e659a286b0fd4
 
         asteroid_rects = [
 
@@ -350,7 +339,7 @@ while run:
             if asteroids[1] - 1/2*size  < -150 or asteroids[1] - 1/2*size > 800:
                 asteroid_data.remove(asteroids)
             elif asteroids[2]- 1/2*size > 800:
-                score -= 10
+                score -= 100
                 asteroid_data.remove(asteroids)
 
             
