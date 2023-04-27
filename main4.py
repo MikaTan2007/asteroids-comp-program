@@ -236,7 +236,6 @@ while run:
             timer = 0
         
         #Asteroid Spawning
-        if asteroid_timer > 500:
         if asteroid_timer > asteroid_timer_set:
 
             spawn_asteroid()
@@ -351,7 +350,6 @@ while run:
             if asteroids[1] - 1/2*size  < -150 or asteroids[1] - 1/2*size > 800:
                 asteroid_data.remove(asteroids)
             elif asteroids[2]- 1/2*size > 800:
-                score -= 100
                 score -= 10
                 asteroid_data.remove(asteroids)
 
